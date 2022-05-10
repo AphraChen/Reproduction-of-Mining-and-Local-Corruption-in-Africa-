@@ -24,7 +24,7 @@ library(tidyverse)
 ```{r}
 # Import dataset
 # please change to your own directory
-mininglocal <- read_dta("E:/ps231b_reproduction_group3/original reproduction package/dataverse_files/mininglocal.dta")
+mininglocal <- read_dta("mininglocal")
 # Remove underline from variable names\
 colnames(mininglocal) <- gsub("^_", "", colnames(mininglocal))
 ```
