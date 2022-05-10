@@ -25,7 +25,7 @@ https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/ZSYWHO.
 
 (f) Description of the geocoding procedure (Geocoding.pdf)
 
-(g) Description of the construction of the nighttime lights data (Creation of light dataset.pdf)
+(g) Description of the construction of the night-time lights data (Creation of light dataset.pdf)
 
 (h) Statetement on restricted data from Afrobarometer (Statement Afrobarometer.docx)
 
