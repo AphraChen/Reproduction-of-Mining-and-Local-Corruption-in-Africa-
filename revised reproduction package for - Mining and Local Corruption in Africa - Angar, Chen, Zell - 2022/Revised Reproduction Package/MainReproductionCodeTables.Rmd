@@ -63,7 +63,6 @@ regression_t12 <- lm_robust(
   se_type="stata",
   cluster = cluster,
   data = mininglocal)
-summary(regression_t12)
 
 # prepare output for column 2
 coefficients_t12_active <- round(as.numeric(regression_t12$coefficients[2]),3)
