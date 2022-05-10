@@ -33,7 +33,7 @@ https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/ZSYWHO.
 
 (j) The original readme file (README - original reproduction package.txt)
 
-**2. Revised Reproduction Package:** It contains our codes for improvements and additional robustness tests. 
+**2. Improvements and Additional Robustness Tests:** It contains our codes for improvements and additional robustness tests. 
 
 (a) Improvement 1- Analysis code in R for Table 1-3 (MainReproductionCodeTables.dta)
 - We successfully translated the majority of STATA codes to R for Table 1-3; however, we failed to reproduce the F-statistics and p-values for Table 1 and                 the F-statistics for Table 3. This remains an area of improvement for future reproducers. For replication of Table 1-3 presented in the main context of                 the paper, researchers can use "mininglocal.dta" or "mininglocal_nw.dta" datasets in the original reproduction package and run our codes.
