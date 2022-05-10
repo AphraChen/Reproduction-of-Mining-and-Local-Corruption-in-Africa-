@@ -1,0 +1,407 @@
+---
+title: "Group Reproduction Codes (Table 1-3)"
+author: "Group 3"
+date: "2022/4/14"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# load necessary packages
+library(sandwich)
+library(haven)
+library(stargazer)
+library(estimatr)
+library(xtable)
+library(tidyverse)
+```
+
+```{r}
+# Import dataset
+# please change to your own directory
+mininglocal <- read_dta("E:/ps231b_reproduction_group3/original reproduction package/dataverse_files/mininglocal.dta")
+# Remove underline from variable names\
+colnames(mininglocal) <- gsub("^_", "", colnames(mininglocal))
+```
+
+# Table 1 Baseline Model
+```{r}
+# Table 1 Baseline Model
+## Regression for column 1
+regression_t11 <- lm_robust(
+  formula = bribe_police ~ active50 + inactive50 + urban + age + age2 + female + education + as.factor(country) + as.factor(year),
+  subset = suspended50 == 0,
+  se_type="stata", 
+  cluster = cluster,
+  data = mininglocal)
+
+# prepare output for column 1
+coefficients_t11_active <- round(as.numeric(regression_t11$coefficients[2]),3)
+tstat_t11_active <- round(as.numeric(regression_t11$statistic[2]),3)
+coefficients_t11_inactive <-round(as.numeric(regression_t11$coefficients[3]),3)
+tstat_t11_inactive <- round(as.numeric(regression_t11$statistic[3]),3)
+Diff_t11 <- as.numeric(coefficients_t11_active - coefficients_t11_inactive)
+Fstat_t11 <- round(as.numeric(regression_t11$fstatistic[1]),3)
+pF_t11 <- round(as.numeric(1-pf(regression_t11$fstatistic[1],regression_t11$fstatistic[2],regression_t11$fstatistic[3])),3)
+mean_fit11 <- round(mean(regression_t11$fitted.values),3)
+R_t11 <- round(regression_t11$r.squared,3)
+nob_t11 <- as.numeric(regression_t11$nobs)
+
+Police <- list(coefficients_t11_active,tstat_t11_active,coefficients_t11_inactive,tstat_t11_inactive,Diff_t11,Fstat_t11,pF_t11,mean_fit11,R_t11,nob_t11)
+```
+
+```{r}
+## Regression for column 2
+regression_t12 <- lm_robust(
+  formula = bribe_permit ~ active50 + inactive50 + urban + age + age2 + female + education + as.factor(country) + as.factor(year),
+  subset = suspended50 == 0,
+  se_type="stata",
+  cluster = cluster,
+  data = mininglocal)
+summary(regression_t12)
+
+# prepare output for column 2
+coefficients_t12_active <- round(as.numeric(regression_t12$coefficients[2]),3)
+tstat_t12_active <- round(as.numeric(regression_t12$statistic[2]),3)
+coefficients_t12_inactive <-round(as.numeric(regression_t12$coefficients[3]),3)
+tstat_t12_inactive <- round(as.numeric(regression_t12$statistic[3]),3)
+Diff_t12 <- as.numeric(coefficients_t12_active - coefficients_t12_inactive)
+Fstat_t12 <- round(as.numeric(regression_t12$fstatistic[1]),3)
+pF_t12 <- round(as.numeric(1-pf(regression_t12$fstatistic[1],regression_t12$fstatistic[2],regression_t12$fstatistic[3])),3)
+mean_fit12 <- round(mean(regression_t12$fitted.values),3)
+R_t12 <- round(regression_t12$r.squared,3)
+nob_t12 <- as.numeric(regression_t12$nobs)
+
+Permit <- list(coefficients_t12_active,tstat_t12_active,coefficients_t12_inactive,tstat_t12_inactive,Diff_t12,Fstat_t12,pF_t12,mean_fit12,R_t12,nob_t12)
+```
+
+```{r}
+## Regression for column 3
+regression_t13 <- lm_robust(
+  formula = local_corruption ~ active50 + inactive50 + urban + age + age2 + female + education + as.factor(country) + as.factor(year),
+  subset = suspended50 == 0,
+  se_type="stata", 
+  cluster = cluster,
+  data = mininglocal)
+
+# prepare output for column 3
+coefficients_t13_active <- round(as.numeric(regression_t13$coefficients[2]),3)
+tstat_t13_active <- round(as.numeric(regression_t13$statistic[2]),3)
+coefficients_t13_inactive <-round(as.numeric(regression_t13$coefficients[3]),3)
+tstat_t13_inactive <- round(as.numeric(regression_t13$statistic[3]),3)
+Diff_t13 <- as.numeric(coefficients_t13_active - coefficients_t13_inactive)
+Fstat_t13 <- round(as.numeric(regression_t13$fstatistic[1]),3)
+pF_t13 <- round(as.numeric(1-pf(regression_t13$fstatistic[1],regression_t13$fstatistic[2],regression_t13$fstatistic[3])),3)
+mean_fit13 <- round(mean(regression_t13$fitted.values),3)
+R_t13 <- round(regression_t13$r.squared,3)
+nob_t13 <- as.numeric(regression_t13$nobs)
+
+LocalCouncilors <- list(coefficients_t13_active,tstat_t13_active,coefficients_t13_inactive,tstat_t13_inactive,Diff_t13,Fstat_t13,pF_t13,mean_fit13,R_t13,nob_t13)
+```
+
+```{r}
+## Regression for column 4
+regression_t14 <- lm_robust(
+  formula = corruption_police ~ active50 + inactive50 + urban + age + age2 + female + education + as.factor(country) + as.factor(year),
+  subset = suspended50 == 0,
+  se_type="stata", 
+  cluster = cluster,
+  data = mininglocal)
+
+# prepare output for column 4
+coefficients_t14_active <- round(as.numeric(regression_t14$coefficients[2]),3)
+tstat_t14_active <- round(as.numeric(regression_t14$statistic[2]),3)
+coefficients_t14_inactive <-round(as.numeric(regression_t14$coefficients[3]),3)
+tstat_t14_inactive <- round(as.numeric(regression_t14$statistic[3]),3)
+Diff_t14 <- round(as.numeric(coefficients_t14_active - coefficients_t14_inactive),3)
+Fstat_t14 <- round(as.numeric(regression_t14$fstatistic[1]),3)
+pF_t14 <- round(as.numeric(1-pf(regression_t14$fstatistic[1],regression_t14$fstatistic[2],regression_t14$fstatistic[3])),3)
+mean_fit14 <- round(mean(regression_t14$fitted.values),3)
+R_t14 <- round(regression_t14$r.squared,3)
+nob_t14 <- as.numeric(regression_t14$nobs)
+
+LocalPolice <- list(coefficients_t14_active,tstat_t14_active,coefficients_t14_inactive,tstat_t14_inactive,Diff_t14,Fstat_t14,pF_t14,mean_fit14,R_t14,nob_t14)
+```
+
+```{r}
+# prepare output for Table 1
+output_t1 <- cbind(Police,Permit,LocalCouncilors,LocalPolice)
+rownames(output_t1) <- c("Active 50 km", "t stat Active50", "Inactive 50 km","t stat Inactive50","Difference in Difference","F-test: active-inactive=0","p-value,F-test","Mean dependent variable","R-squared","Observations")
+print(xtable(output_t1,caption = "Effects of Mine Openings on Corruption: Baseline Models",include.rownames=TRUE,digits = 3),caption.placement="top")
+```
+
+# Table 2 Mine Fixed Effect - country fixed effects, mine fixed effects and year fixed effects
+```{r}
+# Regression for Column 1
+regression_t21 <- lm_robust(
+  formula = bribe_police ~ active50 + as.factor(minefixed50) + urban + age + age2 + female + education + as.factor(year) + as.factor(country),
+  subset = suspended50 == 0,
+  fixed_effects = ~minefixed50,
+  se_type="stata", 
+  cluster = minefixed50,
+  data = mininglocal)
+
+# prepare output for column 1
+coefficients_t21_active <- round(as.numeric(regression_t21$coefficients[2]),3)
+tstat_t21_active <- round(as.numeric(regression_t21$statistic[2]),3)
+mean_fit21 <- round(mean(regression_t21$fitted.values),3)
+R_t21 <- as.numeric(round(regression_t21$proj_r.squared,3))
+nobs_t21 <- as.numeric(regression_t21$nobs)
+
+Police2 <- list(coefficients_t21_active,tstat_t21_active,mean_fit21,R_t21,nobs_t21)
+```
+
+```{r}
+# Regression for Column 2
+regression_t22 <- lm_robust(
+  formula = bribe_permit ~ active50 + as.factor(minefixed50) + urban + age + age2 + female + education + as.factor(year) + as.factor(country),
+  subset = suspended50 == 0,
+  fixed_effects = ~minefixed50,
+  se_type="stata", 
+  cluster = minefixed50,
+  data = mininglocal)
+
+# prepare output for column 2
+coefficients_t22_active <- round(as.numeric(regression_t22$coefficients[2]),3)
+tstat_t22_active <- round(as.numeric(regression_t22$statistic[2]),3)
+mean_fit22 <- round(mean(regression_t22$fitted.values),3)
+R_t22 <- as.numeric(round(regression_t22$proj_r.squared,3))
+nobs_t22 <- as.numeric(regression_t22$nobs)
+
+Permit2 <- list(coefficients_t22_active,tstat_t22_active,mean_fit22,R_t22,nobs_t22)
+```
+
+```{r}
+# Regression for Column 3
+regression_t23 <- lm_robust(
+  formula = local_corruption ~ active50 + factor(minefixed50) + urban + age + age2 + female + education + as.factor(year) + as.factor(country),
+  subset = suspended50 == 0,
+  fixed_effects = minefixed50,
+  se_type="stata", 
+  cluster = minefixed50,
+  data = mininglocal)
+
+# prepare output for column 3
+coefficients_t23_active <- round(as.numeric(regression_t23$coefficients[2]),3)
+tstat_t23_active <- round(as.numeric(regression_t23$statistic[2]),3)
+mean_fit23 <- round(mean(regression_t23$fitted.values),3)
+R_t23 <- as.numeric(round(regression_t23$proj_r.squared,3))
+nobs_t23 <- as.numeric(regression_t23$nobs)
+
+LocalCouncilors2 <- list(coefficients_t23_active,tstat_t23_active,mean_fit23,R_t23,nobs_t23)
+```
+
+```{r}
+# Regression for Column 4
+regression_t24 <- lm_robust(
+  formula = corruption_police ~ active50 + factor(minefixed50) + urban + age + age2 + female + education + as.factor(year) + as.factor(country),
+  subset = suspended50 == 0,
+  fixed_effects = minefixed50,
+  se_type="stata", 
+  cluster = minefixed50,
+  data = mininglocal)
+
+# prepare output for column 4
+coefficients_t24_active <- round(as.numeric(regression_t24$coefficients[2]),3)
+tstat_t24_active <- round(as.numeric(regression_t24$statistic[2]),3)
+mean_fit24 <- round(mean(regression_t24$fitted.values),3)
+R_t24 <- as.numeric(round(regression_t24$proj_r.squared,3))
+nobs_t24 <- as.numeric(regression_t24$nobs)
+
+LocalPolice2 <- list(coefficients_t24_active,tstat_t24_active,mean_fit24,R_t24,nobs_t24)
+```
+
+```{r}
+# prepare output for Table 2
+output_t2 <- cbind(Police2,Permit2,LocalCouncilors2,LocalPolice2)
+rownames(output_t2) <- c("Active 50 km", "t stat Active50", "Mean dependent variable","R-squared","Observations")
+colnames(output_t2) <- c("Police","Permit","Local Councilors","Police")
+print(xtable(output_t2,caption = "Effects of Mine Openings on Corruption: Mine Fixed Effects",include.rownames=TRUE,digits = 3, ),caption.placement = "top")
+```
+
+# Table 3 Nighttime Lights Models
+```{r}
+# create opening_year = interview year - years since mine first opened 
+# replace opening_year=NA if active50=0
+df3 <- mininglocal %>%
+  mutate(opening_year = int_year - yearssince_active50) %>%
+  mutate(opening_year = replace(opening_year, active50==0, NA))
+
+# cluster data by location and year: take the mean of respondent data for each location/year cluster, take the first datapoint for variables that are fixed in each cluster
+df3.a <- df3 %>%
+  group_by(cluster, int_year, year) %>%
+  summarise(
+    across(
+      c(active50,
+        inactive50,
+        suspended50,
+        opening_year,
+        median,
+        mean,
+        countrycode),
+      ~ first(.x)),
+    across(
+      c(age,
+      police,
+      bribe_police,
+      urban,
+      age,
+      age2,
+      female,
+      education),
+      ~ mean(.x, na.rm=TRUE)),
+    across(
+      starts_with("_"),
+      ~ first(.x)),
+    )
+
+df3.b <- df3.a %>%
+  filter(suspended50 == 0) %>%
+  filter(year == int_year)
+```
+
+```{r}
+# Regression for column 1
+regression_t31 <- lm_robust(median ~
+                     active50 + inactive50
+                   + urban
+                   + age
+                   + age2
+                   + female
+                   + education
+                   + factor(countrycode) +  factor(int_year),
+                   se_type="stata",
+                   cluster = cluster, 
+                   data = df3.b)
+
+# Prepare output for column 1
+coefficients_t31_active <- round(as.numeric(regression_t31$coefficients[2]),4)
+tstat_t31_active <- round(as.numeric(regression_t31$statistic[2]),3)
+coefficients_t31_inactive <- round(as.numeric(regression_t31$coefficients[3]),4)
+tstat_t31_inactive <- round(as.numeric(regression_t31$statistic[3]),3)
+medianlight_t31 <- NA
+tstat_t31_medianlight <- NA
+median_active31 <- NA
+tstat_t31_medianactive <- NA
+Diff_t31 <- round(as.numeric(regression_t31$coefficients[2]-regression_t31$coefficients[3]),3)
+Fstat_t31 <- round(as.numeric(regression_t31$fstatistic[1]),3)
+pF_t31 <- round((1-pf(regression_t31$fstatistic[1],regression_t31$fstatistic[2],regression_t31$fstatistic[3])),3)
+mean_fit31 <- round(mean(regression_t31$fitted.values),3)
+R_t31 <- round(regression_t31$r.squared,3)
+nob_t31 <- regression_t31$nobs
+
+medianlight <- list(coefficients_t31_active,tstat_t31_active,coefficients_t31_inactive,tstat_t31_inactive,medianlight_t31,tstat_t31_medianlight,median_active31,tstat_t31_medianactive,Diff_t31,Fstat_t31,pF_t31,mean_fit31,R_t31,nob_t31)
+```
+
+```{r}
+# Regression for column 2
+regression_t32 <- lm_robust(bribe_police ~
+                     median
+                   + urban
+                   + age
+                   + age2
+                   + female
+                   + education
+                   + factor(countrycode) +  factor(int_year),
+                   se_type="stata",
+                   cluster = cluster, 
+                   data = df3.b)
+
+# Prepare output for column 2
+coefficients_t32_active <- NA
+tstat_t32_active <- NA
+coefficients_t32_inactive <- NA
+tstat_t32_inactive <- NA
+medianlight_t32 <- round(as.numeric(regression_t32$coefficients[2]),4)
+tstat_t32_medianlight <- round(as.numeric(regression_t32$statistic[2]),4)
+median_active32 <- NA
+tstat_t32_medianactive <- NA
+Diff_t32 <- NA
+Fstat_t32 <- NA
+pF_t32 <- NA
+mean_fit32 <- round(mean(regression_t32$fitted.values),3)
+R_t32 <- round(regression_t32$r.squared,3)
+nob_t32 <- regression_t32$nobs
+
+bribetopolice2 <- list(coefficients_t32_active,tstat_t32_active,coefficients_t32_inactive,tstat_t32_inactive,medianlight_t32,tstat_t32_medianlight,median_active32,tstat_t32_medianactive,Diff_t32,Fstat_t32,pF_t32,mean_fit32,R_t32,nob_t32)
+```
+
+```{r}
+# Regression for column 3
+regression_t33 <- lm_robust(bribe_police ~
+                     active50 + inactive50
+                   + median
+                   + urban
+                   + age
+                   + age2
+                   + female
+                   + education
+                   + factor(countrycode) +  factor(int_year),
+                   se_type="stata",
+                   cluster = cluster, 
+                   data = df3.b)
+
+# Prepare output for column 3
+coefficients_t33_active <- round(as.numeric(regression_t33$coefficients[2]),4)
+tstat_t33_active <- round(as.numeric(regression_t33$statistic[2]),3)
+coefficients_t33_inactive <- round(as.numeric(regression_t33$coefficients[3]),4)
+tstat_t33_inactive <-  round(as.numeric(regression_t33$statistic[3]),3)
+medianlight_t33 <- round(as.numeric(regression_t33$coefficients[4]),4)
+tstat_t33_medianlight <- round(as.numeric(regression_t33$statistic[4]),3)
+median_active33 <- NA
+tstat_t33_medianactive <- NA
+Diff_t33 <- round(as.numeric(regression_t33$coefficients[2]-regression_t33$coefficients[3]),3)
+Fstat_t33 <- round(as.numeric(regression_t33$fstatistic[1]),3)
+pF_t33 <- round((1-pf(regression_t33$fstatistic[1],regression_t33$fstatistic[2],regression_t33$fstatistic[3])),3)
+mean_fit33 <- round(mean(regression_t33$fitted.values),3)
+R_t33 <- round(regression_t33$r.squared,3)
+nob_t33 <- regression_t33$nobs
+
+bribetopolice3 <- list(coefficients_t33_active,tstat_t33_active,coefficients_t33_inactive,tstat_t33_inactive,medianlight_t33,tstat_t33_medianlight,median_active33,tstat_t33_medianactive,Diff_t33,Fstat_t33,pF_t33,mean_fit33,R_t33,nob_t33)
+```
+
+```{r}
+# Regression for column 4
+regression_t34 <- lm_robust(bribe_police ~
+                     active50*median
+                   + urban
+                   + age
+                   + age2
+                   + female
+                   + education
+                   + factor(countrycode) +  factor(int_year),
+                   se_type="stata",
+                   cluster = cluster, 
+                   data = df3.b)
+
+# Prepare output for column 4
+coefficients_t34_active <- round(as.numeric(regression_t34$coefficients[2]),4)
+tstat_t34_active <- round(as.numeric(regression_t34$statistic[2]),3)
+coefficients_t34_inactive <- NA
+tstat_t34_inactive <- NA
+medianlight_t34 <- round(as.numeric(regression_t34$coefficients[3]),4)
+tstat_t34_medianlight <- round(as.numeric(regression_t34$statistic[3]),3)
+median_active34 <- round(as.numeric(regression_t34$coefficients[34]),4)
+tstat_t34_medianactive <- round(as.numeric(regression_t34$statistic[34]),3)
+Diff_t34 <- NA
+Fstat_t34 <- NA
+pF_t34 <- NA
+mean_fit34 <- round(mean(regression_t34$fitted.values),3)
+R_t34 <- round(regression_t34$r.squared,3)
+nob_t34 <- regression_t34$nobs
+
+bribetopolice4 <- list(coefficients_t34_active,tstat_t34_active,coefficients_t34_inactive,tstat_t34_inactive,medianlight_t34,tstat_t34_medianlight,median_active34,tstat_t34_medianactive,Diff_t34,Fstat_t34,pF_t34,mean_fit34,R_t34,nob_t34)
+```
+
+```{r}
+# prepare output for Table 3
+output_t3 <- cbind(medianlight,bribetopolice2,bribetopolice3,bribetopolice4)
+rownames(output_t3) <- c("Active 50 km", "t stat Active50", "Inactive 50 km", "t stat Inactive50", "Median light", "t stat Median light","Median light X Active 50 km","t stat Median light X Active 50 km", "Difference in difference", "F-test: active-inactive=0","p-value,F-test","Mean dependent variable","R-squared","Observations")
+colnames(output_t3) <- c("Median Light","Bribe to Police","Bribe to Police","Bribe to Police")
+print(xtable(output_t3,caption = "Using Nighttime Lights to Explore Mechanisms",include.rownames=TRUE,digits = 4, ),caption.placement = "top",scalebox=0.7)
+```

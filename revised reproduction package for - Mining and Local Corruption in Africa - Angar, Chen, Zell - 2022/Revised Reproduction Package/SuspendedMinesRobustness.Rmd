@@ -1,0 +1,219 @@
+---
+title: "Suspended Mines Extension"
+author: "Reproduction Group 3"
+date: '2022-05-10'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(sandwich)
+library(haven)
+library(estimatr)
+library(tidyverse)
+
+# load data
+mininglocal <- read_dta("mininglocal.dta")
+```
+
+## Table 1
+# The only difference between these regressions and the original table 1 is that we do not subset the data to exclude areas with suspended mines. 
+
+# Table 1, regression 1
+```{r}
+t1r1_withsusp <- lm_robust(
+  formula = bribe_police ~ active50 + inactive50 + urban + age + age2 + female + education + factor(country) + factor(year),
+  se_type="stata", 
+  cluster = cluster,
+  data = mininglocal)
+summary(t1r1_withsusp)
+```
+
+# Table 1, regression 2
+```{r}
+t1r2_withsusp <- lm_robust(
+  formula = bribe_permit ~ active50 + inactive50 + urban + age + age2 + female + education + factor(country) + factor(year),
+  se_type="stata", 
+  cluster = cluster,
+  data = mininglocal)
+summary(t1r2_withsusp)
+```
+
+# table 1, regression 3
+```{r}
+t1r3_withsusp <- lm_robust(
+  formula = local_corruption ~ active50 + inactive50 + urban + age + age2 + female + education + factor(country) + factor(year),
+  se_type="stata", 
+  cluster = cluster,
+  data = mininglocal)
+summary(t1r3_withsusp)
+```
+
+# table 1, regression 4
+```{r}
+t1r4_withsusp <- lm_robust(
+  formula = corruption_police ~ active50 + inactive50 + urban + age + age2 + female + education + factor(country) + factor(year),
+  se_type="stata", 
+  cluster = cluster,
+  data = mininglocal)
+summary(t1r4_withsusp)
+```
+
+## Table 2
+# The only difference between these regressions and the original table 2 is that we do not subset the data to exclude areas with suspended mines. 
+
+# Table 2 regression 1
+```{r}
+t2r1_withsusp <- lm_robust(
+  formula = bribe_police ~ active50 + factor(minefixed50) + urban + age + age2 + female + education + as.factor(year)-1,
+  se_type="stata", 
+  cluster = minefixed50,
+  data = mininglocal)
+
+summary(t2r1_withsusp)
+```
+
+
+# table 2 regression 2
+```{r}
+t2r2_withsusp <- lm_robust(
+  formula = bribe_permit ~ active50 + factor(minefixed50) + urban + age + age2 + female + education + as.factor(year)-1,
+  se_type="stata", 
+  cluster = minefixed50,
+  data = mininglocal)
+
+summary(t2r2_withsusp)
+```
+
+# table 2 regression 3
+```{r}
+t2r3_withsusp <- lm_robust(
+  formula = local_corruption ~ active50 + factor(minefixed50) + urban + age + age2 + female + education + as.factor(year)-1,
+  se_type="stata", 
+  cluster = minefixed50,
+  data = mininglocal)
+
+summary(t2r3_withsusp)
+```
+
+# table 2 regression 4
+```{r}
+t2r4_withsusp <- lm_robust(
+  formula = corruption_police ~ active50 + factor(minefixed50) + urban + age + age2 + female + education + as.factor(year)-1,
+  se_type="stata", 
+  cluster = minefixed50,
+  data = mininglocal)
+
+summary(t2r4_withsusp)
+```
+
+## Table 3
+
+# The only difference between these regressions and the original table 3 is that we do not subset the data to exclude areas with suspended mines. 
+
+# Clustering observations
+```{r}
+# create opening_year = interview year - years since mine first opened 
+# replace opening_year=NA if active50=0
+df3 <- mininglocal %>%
+  mutate(opening_year = int_year - yearssince_active50) %>%
+  mutate(opening_year = replace(opening_year, active50==0, NA))
+
+# cluster data by location and year: take the mean of respondent data for each location/year cluster, take the first datpoint for variables that are fixed in each cluster
+df3.a <- df3 %>%
+  group_by(cluster, int_year, year) %>%
+  summarise(
+    across(
+      c(active50,
+        inactive50,
+        suspended50,
+        opening_year,
+        median,
+        mean,
+        countrycode),
+      ~ first(.x)),
+    across(
+      c(age,
+      police,
+      bribe_police,
+      urban,
+      age,
+      age2,
+      female,
+      education),
+      ~ mean(.x, na.rm=TRUE)),
+    across(
+      starts_with("_"),
+      ~ first(.x))
+    )
+
+```
+
+# table 3 regression 1
+```{r}
+t3r1_withsusp <- lm_robust(median ~
+                     active50 + inactive50
+                   + urban
+                   + age
+                   + age2
+                   + female
+                   + education
+                   + factor(countrycode) +  factor(int_year),
+                   se_type="stata",
+                   cluster = cluster, 
+                   data = df3.a)
+summary(t3r1_withsusp)
+```
+
+# table 3 regression 2
+```{r}
+t3r2_withsusp <- lm_robust(bribe_police ~
+                     median
+                   + urban
+                   + age
+                   + age2
+                   + female
+                   + education
+                   + factor(countrycode) +  factor(int_year),
+                   se_type="stata",
+                   cluster = cluster, 
+                   data = df3.a)
+summary(t3r2_withsusp)
+
+```
+
+# Table 3 regression 3
+```{r}
+t3r3_withsusp <- lm_robust(bribe_police ~
+                     active50 + inactive50
+                   + median
+                   + urban
+                   + age
+                   + age2
+                   + female
+                   + education
+                   + factor(countrycode) +  factor(int_year),
+                   se_type="stata",
+                   cluster = cluster, 
+                   data = df3.a)
+summary(t3r3_withsusp)
+```
+
+# Table 3 regression 4
+```{r}
+t3r4_withsusp <- lm_robust(bribe_police ~
+                     active50*median
+                   + urban
+                   + age
+                   + age2
+                   + female
+                   + education
+                   + factor(countrycode) +  factor(int_year),
+                   se_type="stata",
+                   cluster = cluster, 
+                   data = df3.a)
+summary(t3r4_withsusp)
+```

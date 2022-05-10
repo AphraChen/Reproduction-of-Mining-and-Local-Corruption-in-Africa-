@@ -1,0 +1,113 @@
+---
+title: "Table 2 Improvement"
+author: "Group 3"
+date: '2022-05-10'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# load necessary packages
+library(sandwich)
+library(haven)
+library(stargazer)
+library(estimatr)
+library(xtable)
+library(tidyverse)
+
+#import dataset
+# please change to your own directory
+mininglocal <- read_dta("mininglocal.dta")
+```
+
+# Table 2 Mine Fixed Effect Models - only mine fixed effects and year fixed effects
+```{r}
+# Regression for Column 1
+regression_t21_2 <- lm_robust(
+  formula = bribe_police ~ active50 + as.factor(minefixed50) + urban + age + age2 + female + education + as.factor(year),
+  subset = suspended50 == 0,
+  fixed_effects = ~minefixed50,
+  se_type="stata", 
+  cluster = minefixed50,
+  data = mininglocal)
+
+# prepare output for column 1
+coefficients_t21_2_active <- round(as.numeric(regression_t21_2$coefficients[2]),3)
+tstat_t21_2_active <- round(as.numeric(regression_t21_2$statistic[2]),3)
+mean_fit21_2 <- round(mean(regression_t21_2$fitted.values),3)
+R_t21_2 <- as.numeric(round(regression_t21_2$proj_r.squared,3))
+nobs_t21_2 <- as.numeric(regression_t21_2$nobs)
+
+Police22 <- list(coefficients_t21_2_active,tstat_t21_2_active,mean_fit21_2,R_t21_2,nobs_t21_2)
+```
+
+```{r}
+# Regression for Column 2
+regression_t22_2 <- lm_robust(
+  formula = bribe_permit ~ active50 + as.factor(minefixed50) + urban + age + age2 + female + education + as.factor(year),
+  subset = suspended50 == 0,
+  fixed_effects = minefixed50,
+  se_type="stata", 
+  cluster = minefixed50,
+  data = mininglocal)
+
+# prepare output for column 2
+coefficients_t22_2_active <- round(as.numeric(regression_t22_2$coefficients[2]),3)
+tstat_t22_2_active <- round(as.numeric(regression_t22_2$statistic[2]),3)
+mean_fit22_2 <- round(mean(regression_t22_2$fitted.values),3)
+R_t22_2 <- as.numeric(round(regression_t22_2$proj_r.squared,3))
+nobs_t22_2 <- as.numeric(regression_t22_2$nobs)
+
+Permit22 <- list(coefficients_t22_2_active,tstat_t22_2_active,mean_fit22_2,R_t22_2,nobs_t22_2)
+```
+
+```{r}
+# Regression for Column 3
+regression_t23_2 <- lm_robust(
+  formula = local_corruption ~ active50 + factor(minefixed50) + urban + age + age2 + female + education + as.factor(year),
+  subset = suspended50 == 0,
+  fixed_effects = minefixed50,
+  se_type="stata", 
+  cluster = minefixed50,
+  data = mininglocal)
+
+# prepare output for column 3
+coefficients_t23_2_active <- round(as.numeric(regression_t23_2$coefficients[2]),3)
+tstat_t23_2_active <- round(as.numeric(regression_t23_2$statistic[2]),3)
+mean_fit23_2 <- round(mean(regression_t23_2$fitted.values),3)
+R_t23_2 <- as.numeric(round(regression_t23_2$proj_r.squared,3))
+nobs_t23_2 <- as.numeric(regression_t23_2$nobs)
+
+LocalCouncilors22 <- list(coefficients_t23_2_active,tstat_t23_2_active,mean_fit23_2,R_t23_2,nobs_t23_2)
+```
+
+```{r}
+# Regression for Column 4
+regression_t24_2 <- lm_robust(
+  formula = corruption_police ~ active50 + factor(minefixed50) + urban + age + age2 + female + education + as.factor(year),
+  subset = suspended50 == 0,
+  fixed_effects = minefixed50,
+  se_type="stata", 
+  cluster = minefixed50,
+  data = mininglocal)
+
+# prepare output for column 4
+coefficients_t24_2_active <- round(as.numeric(regression_t24_2$coefficients[2]),3)
+tstat_t24_2_active <- round(as.numeric(regression_t24_2$statistic[2]),3)
+mean_fit24_2 <- round(mean(regression_t24_2$fitted.values),3)
+R_t24_2 <- as.numeric(round(regression_t24_2$proj_r.squared,3))
+nobs_t24_2 <- as.numeric(regression_t24_2$nobs)
+
+LocalPolice22 <- list(coefficients_t24_2_active,tstat_t24_2_active,mean_fit24_2,R_t24_2,nobs_t24_2)
+```
+
+```{r}
+# prepare output for Table 2 with only mine fixed effects and country fixed effects
+output_t22 <- cbind(Police22,Permit22,LocalCouncilors22,LocalPolice22)
+rownames(output_t22) <- c("Active 50 km", "t stat Active50", "Mean dependent variable","R-squared","Observations")
+colnames(output_t22) <- c("Police","Permit","Local Councilors","Police")
+print(xtable(output_t22,caption = "Effects of Mine Openings on Corruption: Mine Fixed Effects",include.rownames=TRUE,digits = 3, ),caption.placement = "top")
+```
