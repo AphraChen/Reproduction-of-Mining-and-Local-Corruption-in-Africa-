@@ -46,4 +46,7 @@ https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/ZSYWHO.
 
 (c) Additional Robustness Test - Analysis Code with Suspended Mines (SuspendedMinesRobustness.dta)
 - We conducted analysis for Table 1-3 with suspended mines, which were excluded by the authors from the original analysis. This variation shows results                   with the full control group.
+
+(d) Analytical Data (mininglocal)
+- This is the same analytical dataset as the one in the original reproduction package. We have it here for the convenience of reproduction.
               
